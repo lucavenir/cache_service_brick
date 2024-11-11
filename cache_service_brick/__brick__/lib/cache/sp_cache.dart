@@ -1,5 +1,7 @@
 import 'dart:convert' as convert;
 
+// TODO(dario): non possiamo dipendere da `flutter`
+// TODO(dario): installare https://pub.dev/packages/meta nei postgen e iniettarlo qui al suo posto
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -58,6 +60,7 @@ class SpBoolCache extends SpCache<bool> {
   Future<bool> put(bool value) => sP.setBool(key, value);
 }
 
+// TODO(dario): on second thought... we can remove this (it's a subset of `SpJsonListCache`)
 class SpStringListCache extends SpCache<List<String>> {
   const SpStringListCache(super.sP, {required super.key});
 
@@ -111,7 +114,9 @@ class SpJsonListCache<T extends Object> extends SpCache<List<T>> {
   List<T>? get() {
     final listEncoded = sP.getStringList(key);
     if (listEncoded == null) return null;
-    final listDecoded = [...listEncoded.map((e) => convert.jsonDecode(e) as Json)];
+    final listDecoded = [
+      ...listEncoded.map((e) => convert.jsonDecode(e) as Json)
+    ];
     return [...listDecoded.map(fromJson)];
   }
 
