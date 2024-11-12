@@ -24,4 +24,15 @@ environment:
 #  * an optional prompt phrase used when asking for the variable
 #  * a list of values (enums only)
 #  * an optional separator (list only)
-
+#  * an optional list of separator characters (list only)
+vars:
+  hooks:
+    type: boolean
+    prompt: Does this project use hooks (from either `flutter_hooks` or `hooks_riverpod`)?
+    default: true
+    description: Wanna use hooks? y/n
+  generation:
+    type: boolean
+    default: true
+    prompt: Do you want to include build_runner generation?
+    description: Whether or not to include build runner

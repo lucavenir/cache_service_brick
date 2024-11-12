@@ -1,12 +1,10 @@
 import 'dart:convert' as convert;
 
-// TODO(dario): non possiamo dipendere da `flutter`
-// TODO(dario): installare https://pub.dev/packages/meta nei postgen e iniettarlo qui al suo posto
-import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:meta/meta.dart';
 
 import 'json.dart';
 
+///Class to easily handle shared preferences in a type-safe way
 sealed class SpCache<T> {
   const SpCache(this.sP, {required this.key});
   @protected
@@ -20,6 +18,7 @@ sealed class SpCache<T> {
   Future<void> delete() => sP.remove(key);
 }
 
+///Class to handle shared preferences of type "String"
 class SpStringCache extends SpCache<String> {
   const SpStringCache(super.sP, {required super.key});
 
@@ -30,6 +29,7 @@ class SpStringCache extends SpCache<String> {
   Future<bool> put(String value) => sP.setString(key, value);
 }
 
+///Class to handle shared preferences of type "int"
 class SpIntCache extends SpCache<int> {
   const SpIntCache(super.sP, {required super.key});
 
@@ -40,6 +40,7 @@ class SpIntCache extends SpCache<int> {
   Future<bool> put(int value) => sP.setInt(key, value);
 }
 
+///Class to handle shared preferences of type "double"
 class SpDoubleCache extends SpCache<double> {
   const SpDoubleCache(super.sP, {required super.key});
 
@@ -50,6 +51,7 @@ class SpDoubleCache extends SpCache<double> {
   Future<bool> put(double value) => sP.setDouble(key, value);
 }
 
+///Class to handle shared preferences of type "bool"
 class SpBoolCache extends SpCache<bool> {
   const SpBoolCache(super.sP, {required super.key});
 
@@ -60,17 +62,7 @@ class SpBoolCache extends SpCache<bool> {
   Future<bool> put(bool value) => sP.setBool(key, value);
 }
 
-// TODO(dario): on second thought... we can remove this (it's a subset of `SpJsonListCache`)
-class SpStringListCache extends SpCache<List<String>> {
-  const SpStringListCache(super.sP, {required super.key});
-
-  @override
-  List<String>? get() => sP.getStringList(key);
-
-  @override
-  Future<bool> put(List<String> value) => sP.setStringList(key, value);
-}
-
+///Class to handle shared preferences of type "Json"
 class SpJsonCache<T extends Object> extends SpCache<T> {
   const SpJsonCache(
     super.sP, {
@@ -98,6 +90,7 @@ class SpJsonCache<T extends Object> extends SpCache<T> {
   }
 }
 
+///Class to handle shared preferences of type "List<Json>"
 class SpJsonListCache<T extends Object> extends SpCache<List<T>> {
   const SpJsonListCache(
     super.sP, {
@@ -114,9 +107,7 @@ class SpJsonListCache<T extends Object> extends SpCache<List<T>> {
   List<T>? get() {
     final listEncoded = sP.getStringList(key);
     if (listEncoded == null) return null;
-    final listDecoded = [
-      ...listEncoded.map((e) => convert.jsonDecode(e) as Json)
-    ];
+    final listDecoded = [...listEncoded.map((e) => convert.jsonDecode(e) as Json)];
     return [...listDecoded.map(fromJson)];
   }
 
